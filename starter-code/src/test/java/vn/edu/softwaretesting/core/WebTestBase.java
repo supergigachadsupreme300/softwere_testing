@@ -26,6 +26,7 @@ public abstract class WebTestBase {
 
         driver = switch (browser) {
             case "chrome" -> new ChromeDriver(chromeOptions(headless));
+            case "brave" -> new ChromeDriver(braveOptions(headless));
             case "firefox" -> new FirefoxDriver(firefoxOptions(headless));
             default -> throw new IllegalArgumentException(
                     "Unsupported browser: " + browser);
@@ -56,6 +57,20 @@ public abstract class WebTestBase {
         FirefoxOptions options = new FirefoxOptions();
         if (headless) {
             options.addArguments("-headless");
+        }
+        return options;
+    }
+    private ChromeOptions braveOptions(boolean headless) {
+        ChromeOptions options = new ChromeOptions();
+        String bravePath = System.getProperty("bravePath");
+        if (bravePath != null && !bravePath.isBlank()) { //calling isBlank on a null will cause exception
+            options.setBinary(bravePath);
+        }
+        else{
+            options.setBinary("C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe");
+        }
+        if (headless) {
+            options.addArguments("--headless=new");
         }
         return options;
     }
