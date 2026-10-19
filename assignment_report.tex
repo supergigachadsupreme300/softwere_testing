@@ -1,0 +1,661 @@
+\documentclass[a4paper,12pt]{article}
+
+% =========================================================
+% GÓI LỆNH VÀ ĐỊNH DẠNG (giữ phong cách mẫu của giảng viên)
+% Biên dịch bằng pdfLaTeX; đặt logoITSGU.png và
+% logoITSGUsmall.png cùng thư mục với file .tex nếu có.
+% =========================================================
+\usepackage{vntex}
+\usepackage[a4paper,margin=2.5cm,headheight=42pt,footskip=1cm]{geometry}
+\usepackage{amssymb,latexsym}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{lastpage}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{multicol}
+\usepackage{rotating}
+\usepackage{setspace}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usetikzlibrary{arrows,backgrounds}
+
+\hypersetup{urlcolor=blue,linkcolor=black,citecolor=black,colorlinks=true}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{3pt}
+\onehalfspacing
+
+% Màu và cấu hình trình bày mã nguồn
+\definecolor{dkgreen}{rgb}{0,0.45,0}
+\definecolor{gray}{rgb}{0.45,0.45,0.45}
+\definecolor{mauve}{rgb}{0.55,0,0.75}
+\lstset{
+  frame=single,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=fullflexible,
+  basicstyle=\small\ttfamily,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=6pt,
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=false,
+  tabsize=2
+}
+
+% Header/footer theo mẫu giảng viên
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[L]{
+  \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+      \put(0,-8){\IfFileExists{logoITSGUsmall.png}{\includegraphics[width=8mm,height=8mm]{logoITSGUsmall.png}}{\fbox{\rule{0pt}{6mm}\rule{6mm}{0pt}}}}
+    \end{picture} &
+    \begin{tabular}{l}
+      \textbf{\ttfamily Trường Đại học Sài Gòn}\\
+      \textbf{\ttfamily Khoa Công Nghệ Thông Tin}
+    \end{tabular}
+  \end{tabular}
+}
+\fancyhead[R]{\tiny\bfseries KIỂM THỬ PHẦN MỀM}
+\fancyfoot{}
+\fancyfoot[L]{\scriptsize\ttfamily Kiểm thử hộp đen -- Assignment 1}
+\fancyfoot[R]{\scriptsize\ttfamily Trang \thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+% Khung đánh dấu nơi cần thêm ảnh minh chứng.
+% Ví dụ: \evidence{images/nv1-maven-test.png}{Kết quả chạy mvn clean test}
+\newcommand{\evidence}[2]{%
+  \begin{figure}[htbp]
+    \centering
+    \IfFileExists{#1}{\includegraphics[width=0.88\textwidth]{#1}}{%
+      \fbox{\begin{minipage}[c][3cm][c]{0.82\textwidth}
+        \centering\textit{Chèn ảnh minh chứng tại đây}\\[3pt]
+        \texttt{#1}
+      \end{minipage}}}
+    \caption{#2}
+  \end{figure}
+}
+\newcommand{\fillin}[1]{\textit{[#1]}}
+\newcommand{\tcid}[1]{\texttt{#1}}
+
+\begin{document}
+
+% =========================================================
+% TRANG BÌA -- giữ bố cục mẫu của giảng viên, thay nội dung
+% cho đúng assignment Kiểm thử phần mềm.
+% =========================================================
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+  \textbf{TRƯỜNG ĐẠI HỌC SÀI GÒN}\\
+  \textbf{KHOA CÔNG NGHỆ THÔNG TIN}
+\end{center}
+\vspace{0.8cm}
+
+\begin{figure}[h!]
+  \centering
+  \IfFileExists{logoITSGU.png}{\includegraphics[width=3cm]{logoITSGU.png}}{\fbox{\rule{0pt}{2.3cm}\rule{2.3cm}{0pt}}}
+\end{figure}
+
+\vspace{0.7cm}
+\begin{center}
+\begin{tabular}{c}
+  \textbf{\Large KIỂM THỬ PHẦN MỀM}\\[0.35cm]
+  \hline\\[0.35cm]
+  \textbf{\Large ASSIGNMENT 1}\\[0.25cm]
+  \textbf{\LARGE KIỂM THỬ HỘP ĐEN}\\[0.15cm]
+  \textbf{\Large VÀ TỰ ĐỘNG HÓA WEB VỚI JUNIT 5}\\[0.35cm]
+  \hline
+\end{tabular}
+\end{center}
+
+\vspace{2.0cm}
+\begin{flushright}
+\begin{tabular}{r l}
+  Giảng viên hướng dẫn: & \fillin{Tên giảng viên}\\[0.2cm]
+  Nhóm: & \fillin{Tên hoặc số nhóm}\\[0.2cm]
+  Sinh viên: & \fillin{Họ tên -- MSSV}\\
+  & \fillin{Họ tên -- MSSV}\\
+  & \fillin{Họ tên -- MSSV}\\
+  & \fillin{Họ tên -- MSSV}\\
+  & \fillin{Họ tên -- MSSV}\\
+\end{tabular}
+\end{flushright}
+
+\vfill
+\begin{center}
+  {\footnotesize TP. HỒ CHÍ MINH, THÁNG 10/2026}
+\end{center}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% =========================================================
+\section{Giới thiệu}
+
+\subsection{Mục tiêu}
+Bài tập nhằm thực hành kiểm thử hộp đen, thiết kế test case theo các kỹ thuật được yêu cầu, thực thi kiểm thử thủ công và tự động hóa kiểm thử web bằng JUnit 5, Selenium WebDriver và Maven.
+
+\subsection{Phạm vi kiểm thử}
+Đối tượng kiểm thử là website SauceDemo. Báo cáo bao gồm năm phần công việc: chạy và mở rộng mã mẫu (NV1), phân tích yêu cầu (NV2), thiết kế test case (NV3), thực thi thủ công và báo cáo lỗi (NV4), tự động hóa bằng JUnit 5 (NV5).
+
+\subsection{Công cụ và môi trường}
+\begin{table}[htbp]
+\centering
+\caption{Môi trường thực hiện kiểm thử}
+\begin{tabularx}{\textwidth}{|p{4cm}|X|}
+\hline
+\textbf{Thành phần} & \textbf{Thông tin sử dụng} \\
+\hline
+Hệ điều hành & \fillin{Ví dụ: Windows 11 64-bit} \\
+\hline
+Java & \fillin{Kết quả lệnh java -version} \\
+\hline
+Maven & \fillin{Kết quả lệnh mvn -version} \\
+\hline
+Trình duyệt & Google Chrome -- \fillin{phiên bản tại chrome://settings/help} \\
+\hline
+Framework kiểm thử & JUnit 5 (Jupiter) \fillin{phiên bản} \\
+\hline
+Công cụ tự động hóa & Selenium WebDriver \fillin{phiên bản} \\
+\hline
+Website & \url{https://www.saucedemo.com/} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Quy ước trong báo cáo}
+\begin{itemize}[leftmargin=1.25cm]
+  \item Mỗi test case có mã định danh duy nhất; mã phải thống nhất giữa báo cáo, file Excel và tên hiển thị trong mã kiểm thử.
+  \item Trạng thái thực thi thủ công sử dụng một trong ba giá trị: \texttt{PASS}, \texttt{FAIL}, \texttt{BLOCKED}.
+  \item Các test case trùng nhau giữa các kỹ thuật thiết kế chỉ được tính một lần khi thống kê số lượng.
+  \item Các vị trí có nội dung trong ngoặc vuông cần được nhóm thay bằng dữ liệu và kết quả thực tế.
+\end{itemize}
+
+% =========================================================
+\section{NV1 -- Chạy và mở rộng mã mẫu}
+
+\subsection{Mục tiêu}
+Chạy bộ mã mẫu bằng Maven, bổ sung hai test case vào file dữ liệu đăng nhập và chạy lại để kiểm tra kết quả.
+
+\subsection{Chạy bộ kiểm thử ban đầu}
+Tại thư mục chứa file \texttt{pom.xml}, thực hiện lệnh:
+\begin{lstlisting}[language=bash]
+mvn clean test
+\end{lstlisting}
+Kết quả thực tế: \fillin{Mô tả ngắn kết quả chạy lần đầu}.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{mvn_clean_test.png}
+    \caption{Kết quả chạy kiểm thử lần đầu}
+    \label{fig:nv1-test-result}
+\end{figure}
+
+\subsection{Bổ sung test case vào login-data.csv}
+Bổ sung ít nhất hai dòng dữ liệu mới trong file \texttt{src/test/resources/login-data.csv}. Ví dụ dữ liệu kiểm tra trường rỗng:
+\begin{lstlisting}
+"","secret_sauce",false,Username is required
+standard_user,"",false,Password is required
+\end{lstlisting}
+Lưu ý: trường dữ liệu rỗng cần viết thành \texttt{""}; không để trống ô CSV vì có thể được đọc thành giá trị \texttt{null}.
+
+\subsection{Chạy lại bộ kiểm thử}
+Sau khi cập nhật dữ liệu, chạy lại:
+\begin{lstlisting}[language=bash]
+mvn clean test
+\end{lstlisting}
+Kết quả thực tế: \fillin{Tổng số test, số PASS/FAIL và thông tin liên quan}.
+\evidence{images/nv1-test-sau-khi-mo-rong.png}{Kết quả chạy sau khi bổ sung hai test case}
+
+\subsection{Giải thích các annotation được sử dụng}
+\begin{table}[htbp]
+\centering
+\caption{Các annotation JUnit 5 trong mã mẫu}
+\begin{tabularx}{\textwidth}{|p{4cm}|X|}
+\hline
+\textbf{Annotation} & \textbf{Ý nghĩa} \\
+\hline
+\texttt{@BeforeEach} & Được thực thi trước mỗi test method, thường dùng để chuẩn bị dữ liệu hoặc trạng thái ban đầu cho kiểm thử. \\
+\hline
+\texttt{@ParameterizedTest} & Cho phép chạy cùng một test method nhiều lần với các bộ dữ liệu đầu vào khác nhau. \\
+\hline
+\texttt{@CsvFileSource} & Đọc các bộ dữ liệu từ file CSV và truyền từng dòng vào tham số của test method. \\
+\hline
+\end{tabularx}
+\end{table}
+
+% =========================================================
+\section{NV2 -- Phân tích yêu cầu}
+
+\subsection{Đặc tả yêu cầu chức năng và phi chức năng}
+\begin{table}[htbp]
+\centering
+\caption{Danh sách yêu cầu của hệ thống}
+\small
+\begin{tabularx}{\textwidth}{|p{1.8cm}|p{2.7cm}|X|}
+\hline
+\textbf{Mã} & \textbf{Tên yêu cầu} & \textbf{Mô tả yêu cầu} \\
+\hline
+FR-01 & Đăng nhập (Login) & Người dùng nhập username và password. Đăng nhập thành công chuyển đến \texttt{inventory.html}. Username phân biệt chữ hoa/chữ thường. Hệ thống thông báo phù hợp khi thiếu username, thiếu password, thông tin đăng nhập không hợp lệ hoặc tài khoản bị khóa. \\
+\hline
+FR-02 & Giỏ hàng (Cart) & Cho phép thêm hoặc xóa sản phẩm khỏi giỏ. Huy hiệu số lượng cập nhật theo giỏ hàng; khi giỏ rỗng thì không hiển thị huy hiệu. \\
+\hline
+FR-03 & Thanh toán (Checkout) & First Name, Last Name và Postal Code là các trường bắt buộc. Hệ thống hiển thị Item total, Tax bằng 8\% Item total được làm tròn đến hai chữ số thập phân và Total bằng Item total cộng Tax. Finish hiển thị thông báo thành công và giỏ hàng rỗng; Cancel quay về \texttt{cart.html}. \\
+\hline
+FR-04 & Sắp xếp sản phẩm (Sorting) & Hỗ trợ Name A-Z, Name Z-A, Price low-high và Price high-low. \\
+\hline
+NFR-01 & Hiệu năng (Performance) & Sau khi đăng nhập thành công, trang sản phẩm phải hiển thị trong không quá 3 giây; đánh giá bằng trung vị của 5 lần đo trên kết nối mạng ổn định. \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Đánh giá rủi ro}
+Điểm rủi ro được tính theo công thức:
+\[
+R = P \times I
+\]
+Trong đó $P$ là khả năng xảy ra và $I$ là mức độ ảnh hưởng, mỗi tiêu chí được chấm từ 1 đến 5. Theo đề bài, rủi ro có $R \geq 12$ cần được ưu tiên và có số lượng test case tương ứng nhiều hơn.
+
+\begin{table}[htbp]
+\centering
+\caption{Bảng đánh giá rủi ro}
+\begin{tabularx}{\textwidth}{|p{1.7cm}|X|c|c|c|p{2.3cm}|}
+\hline
+\textbf{Mã yêu cầu} & \textbf{Rủi ro} & \textbf{P} & \textbf{I} & \textbf{R=P$\times$I} & \textbf{Mức ưu tiên} \\
+\hline
+FR-01 & Đăng nhập không đúng hoặc không xử lý đúng các trường hợp lỗi & 3 & 4 & 12 & Cao \\
+\hline
+FR-02 & \fillin{Mô tả rủi ro giỏ hàng} & \fillin{ } & \fillin{ } & \fillin{ } & \fillin{ } \\
+\hline
+FR-03 & \fillin{Mô tả rủi ro thanh toán} & \fillin{ } & \fillin{ } & \fillin{ } & \fillin{ } \\
+\hline
+FR-04 & \fillin{Mô tả rủi ro sắp xếp} & \fillin{ } & \fillin{ } & \fillin{ } & \fillin{ } \\
+\hline
+NFR-01 & \fillin{Mô tả rủi ro hiệu năng} & \fillin{ } & \fillin{ } & \fillin{ } & \fillin{ } \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Ma trận truy vết (Traceability Matrix)}
+Bảng dưới đây liên kết yêu cầu với kỹ thuật thiết kế, test case, lớp kiểm thử và lỗi được ghi nhận. Bổ sung mã test case và bug theo kết quả làm việc thực tế.
+\begin{table}[htbp]
+\centering
+\caption{Ma trận truy vết yêu cầu -- kiểm thử}
+\scriptsize
+\begin{tabularx}{\textwidth}{|p{1.4cm}|p{2cm}|p{2cm}|p{2.1cm}|p{2.2cm}|X|}
+\hline
+\textbf{Yêu cầu} & \textbf{Kỹ thuật} & \textbf{Mã test case} & \textbf{Lớp kiểm thử} & \textbf{Mã bug} & \textbf{Ghi chú/kết quả} \\
+\hline
+FR-01 & EP, DT, UC/BVA nếu phù hợp & \fillin{TC-LOGIN-...} & \texttt{LoginTest} & \fillin{BUG-xx hoặc --} & \fillin{Kết quả} \\
+\hline
+FR-02 & EP, BVA, UC & \fillin{TC-CART-...} & \texttt{CartTest} & \fillin{BUG-xx hoặc --} & \fillin{Kết quả} \\
+\hline
+FR-03 & EP, BVA, DT, UC & \fillin{TC-CHK-...} & \texttt{CheckoutTest} & \fillin{BUG-xx hoặc --} & \fillin{Kết quả} \\
+\hline
+FR-04 & EP, UC & \fillin{TC-SORT-...} & \texttt{SortTest} & \fillin{BUG-xx hoặc --} & \fillin{Kết quả} \\
+\hline
+NFR-01 & Kiểm thử hiệu năng & \fillin{TC-PERF-...} & \texttt{PerformanceTest} & \fillin{BUG-xx hoặc --} & \fillin{Kết quả đo} \\
+\hline
+\end{tabularx}
+\end{table}
+
+% =========================================================
+\section{NV3 -- Thiết kế test case}
+
+\subsection{Quy ước test case}
+Mỗi test case cần có tối thiểu mã test case, yêu cầu liên quan, tiền điều kiện, dữ liệu đầu vào, các bước thực hiện và kết quả mong đợi. Sử dụng cùng mã test case trong báo cáo, file \texttt{test-cases.xlsx} và annotation \texttt{@DisplayName}.
+
+\subsection{Phân lớp tương đương (Equivalence Partitioning -- EP)}
+Áp dụng EP cho các trường đầu vào phù hợp, bao gồm username/password hoặc các trường thanh toán. Bảng sau là khung ghi kết quả thiết kế.
+\begin{table}[htbp]
+\centering
+\caption{Test case theo phân lớp tương đương}
+\small
+\begin{tabularx}{\textwidth}{|p{1.8cm}|p{2cm}|p{2.4cm}|X|X|}
+\hline
+\textbf{Mã TC} & \textbf{Yêu cầu} & \textbf{Trường/ lớp} & \textbf{Dữ liệu kiểm thử} & \textbf{Kết quả mong đợi} \\
+\hline
+\fillin{TC-EP-01} & \fillin{FR-01} & Username & Username hợp lệ & Đăng nhập thành công nếu password hợp lệ \\
+\hline
+\fillin{TC-EP-02} & \fillin{FR-01} & Username & Username rỗng & Hiển thị lỗi Username is required \\
+\hline
+\fillin{TC-EP-03} & \fillin{FR-01} & Password & Password rỗng & Hiển thị lỗi Password is required \\
+\hline
+\fillin{TC-EP-04} & \fillin{FR-01} & Thông tin đăng nhập & \fillin{Dữ liệu không hợp lệ} & Hiển thị thông báo đăng nhập không hợp lệ \\
+\hline
+\fillin{TC-EP-05} & \fillin{FR-03} & First Name & \fillin{Giá trị hợp lệ/không hợp lệ} & \fillin{Kết quả mong đợi} \\
+\hline
+\fillin{TC-EP-06} & \fillin{FR-03} & Last Name & \fillin{Giá trị hợp lệ/không hợp lệ} & \fillin{Kết quả mong đợi} \\
+\hline
+\fillin{TC-EP-07} & \fillin{FR-03} & Postal Code & \fillin{Giá trị hợp lệ/không hợp lệ} & \fillin{Kết quả mong đợi} \\
+\hline
+\fillin{TC-EP-08} & \fillin{FR-04} & Tùy chọn sort & \fillin{Một tùy chọn hợp lệ} & Danh sách được sắp xếp theo tùy chọn đã chọn \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Phân tích giá trị biên (Boundary Value Analysis -- BVA)}
+Thiết kế tối thiểu 8 test case cho các miền giá trị phù hợp. Với giỏ hàng, cần kiểm tra các giá trị biên như rỗng, một sản phẩm, số lượng gần giới hạn và trạng thái sau khi xóa. Với phép tính thuế, kiểm tra trường hợp làm tròn đến hai chữ số thập phân.
+\begin{table}[htbp]
+\centering
+\caption{Test case theo phân tích giá trị biên}
+\small
+\begin{tabularx}{\textwidth}{|p{1.8cm}|p{2.1cm}|p{2.2cm}|X|X|}
+\hline
+\textbf{Mã TC} & \textbf{Yêu cầu} & \textbf{Miền giá trị} & \textbf{Giá trị biên/đầu vào} & \textbf{Kết quả mong đợi} \\
+\hline
+\fillin{TC-BVA-01} & FR-02 & Số lượng giỏ hàng & 0 sản phẩm & Giỏ rỗng, không hiển thị badge \\
+\hline
+\fillin{TC-BVA-02} & FR-02 & Số lượng giỏ hàng & 1 sản phẩm & Badge hiển thị 1 \\
+\hline
+\fillin{TC-BVA-03} & FR-02 & Số lượng giỏ hàng & 5 sản phẩm & Badge hiển thị đúng số lượng \\
+\hline
+\fillin{TC-BVA-04} & FR-02 & Số lượng giỏ hàng & 6 sản phẩm & Badge hiển thị đúng số lượng \\
+\hline
+\fillin{TC-BVA-05} & FR-02 & Xóa sản phẩm & Từ 1 sản phẩm về 0 & Badge biến mất khi giỏ hàng rỗng \\
+\hline
+\fillin{TC-BVA-06} & FR-03 & Tax & Trường hợp phải làm tròn & Tax bằng 8\% Item total, làm tròn 2 chữ số \\
+\hline
+\fillin{TC-BVA-07} & FR-03 & Total & Tổng tiền sau thuế & Total = Item total + Tax \\
+\hline
+\fillin{TC-BVA-08} & \fillin{FR-03/khác} & \fillin{Miền biên thứ hai} & \fillin{Dữ liệu biên} & \fillin{Kết quả mong đợi} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Bảng quyết định (Decision Table -- DT)}
+Xây dựng tối thiểu hai bảng quyết định: một bảng cho đăng nhập và một bảng cho kiểm tra các trường checkout. Ghi đầy đủ các điều kiện, tổ hợp điều kiện, hành động và test case tương ứng.
+
+\subsubsection{Bảng quyết định đăng nhập}
+\begin{table}[htbp]
+\centering
+\caption{Bảng quyết định cho FR-01}
+\small
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|c|}
+\hline
+\textbf{Điều kiện/hành động} & \textbf{R1} & \textbf{R2} & \textbf{R3} & \textbf{R4} & \textbf{R5} \\
+\hline
+Username được cung cấp & Có & Không & Có & Có & Có \\
+\hline
+Password được cung cấp & Có & -- & Không & Có & Có \\
+\hline
+Thông tin đăng nhập hợp lệ & Có & -- & -- & Không & Có \\
+\hline
+Tài khoản bị khóa & Không & -- & -- & -- & Có \\
+\hline
+Kết quả & Thành công & Lỗi username & Lỗi password & Sai thông tin & Lỗi tài khoản bị khóa \\
+\hline
+Mã test case & \fillin{TC-DT-01} & \fillin{TC-DT-02} & \fillin{TC-DT-03} & \fillin{TC-DT-04} & \fillin{TC-DT-05} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection{Bảng quyết định checkout}
+\begin{table}[htbp]
+\centering
+\caption{Bảng quyết định cho FR-03}
+\small
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|}
+\hline
+\textbf{Điều kiện/hành động} & \textbf{R1} & \textbf{R2} & \textbf{R3} & \textbf{R4} \\
+\hline
+First Name được nhập & Có & Không & Có & Có \\
+\hline
+Last Name được nhập & Có & -- & Không & Có \\
+\hline
+Postal Code được nhập & Có & -- & -- & Không \\
+\hline
+Kết quả & Tiếp tục checkout & Lỗi First Name & Lỗi Last Name & Lỗi Postal Code \\
+\hline
+Mã test case & \fillin{TC-DT-06} & \fillin{TC-DT-07} & \fillin{TC-DT-08} & \fillin{TC-DT-09} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Kiểm thử theo ca sử dụng (Use Case -- UC)}
+Thiết kế tối thiểu hai use case; mỗi use case có ít nhất hai luồng thay thế (alternative flows). Có thể dùng UC đăng nhập và UC quản lý giỏ hàng hoặc checkout theo phân công của nhóm.
+
+\subsubsection{UC-01 -- Đăng nhập}
+\begin{itemize}
+  \item Tác nhân: Người dùng.
+  \item Tiền điều kiện: Người dùng truy cập trang đăng nhập SauceDemo.
+  \item Luồng chính: Nhập username/password hợp lệ, chọn Login, hệ thống chuyển đến trang sản phẩm.
+  \item Luồng thay thế 1: Bỏ trống username, hệ thống hiển thị lỗi bắt buộc nhập username.
+  \item Luồng thay thế 2: Bỏ trống password, hệ thống hiển thị lỗi bắt buộc nhập password.
+  \item Luồng thay thế 3: Nhập thông tin sai hoặc dùng tài khoản bị khóa, hệ thống hiển thị thông báo tương ứng.
+  \item Test case liên quan: \fillin{Danh sách mã test case UC-01}.
+\end{itemize}
+
+\subsubsection{UC-02 -- Quản lý giỏ hàng/checkout}
+\begin{itemize}
+  \item Tác nhân: Người dùng.
+  \item Tiền điều kiện: Người dùng đã đăng nhập và đang ở trang sản phẩm.
+  \item Luồng chính: Thêm sản phẩm vào giỏ, mở giỏ hàng, thực hiện checkout với thông tin hợp lệ và hoàn tất đặt hàng.
+  \item Luồng thay thế 1: Xóa sản phẩm khỏi giỏ và kiểm tra badge số lượng.
+  \item Luồng thay thế 2: Bỏ trống một trường bắt buộc ở checkout; hệ thống hiển thị lỗi tương ứng.
+  \item Luồng thay thế 3: Chọn Cancel; hệ thống quay về trang giỏ hàng.
+  \item Test case liên quan: \fillin{Danh sách mã test case UC-02}.
+\end{itemize}
+
+\subsection{Tổng hợp số lượng test case thiết kế}
+\begin{table}[htbp]
+\centering
+\caption{Tổng hợp test case NV3}
+\begin{tabularx}{0.9\textwidth}{|X|c|c|}
+\hline
+\textbf{Kỹ thuật} & \textbf{Số lượng tối thiểu theo đề} & \textbf{Số lượng nhóm đã thiết kế} \\
+\hline
+EP & 8 & \fillin{ } \\
+\hline
+BVA & 8 & \fillin{ } \\
+\hline
+DT & 8 & \fillin{ } \\
+\hline
+UC & 8 & \fillin{ } \\
+\hline
+NFR-01 & 1 & \fillin{ } \\
+\hline
+Tổng số test case không trùng & Theo thống kê sau khi loại trùng & \fillin{ } \\
+\hline
+\end{tabularx}
+\end{table}
+
+% =========================================================
+\section{NV4 -- Thực thi kiểm thử thủ công và báo cáo lỗi}
+
+\subsection{Kết quả thực thi thủ công}
+Mỗi lần thực thi cần ghi mã test case, ngày thực hiện/người thực hiện, môi trường, kết quả thực tế và trạng thái. Chỉ sử dụng \texttt{PASS}, \texttt{FAIL} hoặc \texttt{BLOCKED}.
+\begin{table}[htbp]
+\centering
+\caption{Bảng ghi nhận thực thi thủ công}
+\scriptsize
+\begin{tabularx}{\textwidth}{|p{1.6cm}|p{1.7cm}|p{2cm}|p{2.2cm}|X|p{1.5cm}|}
+\hline
+\textbf{Mã TC} & \textbf{Ngày/người chạy} & \textbf{Môi trường} & \textbf{Kết quả mong đợi} & \textbf{Kết quả thực tế} & \textbf{Trạng thái} \\
+\hline
+\fillin{TC-...} & \fillin{Ngày, tên} & \fillin{Chrome/OS} & \fillin{Kết quả mong đợi} & \fillin{Kết quả quan sát} & \fillin{PASS/FAIL/BLOCKED} \\
+\hline
+\fillin{TC-...} & \fillin{Ngày, tên} & \fillin{Chrome/OS} & \fillin{Kết quả mong đợi} & \fillin{Kết quả quan sát} & \fillin{PASS/FAIL/BLOCKED} \\
+\hline
+\end{tabularx}
+\end{table}
+\evidence{images/nv4-thuc-thi-thu-cong.png}{Ảnh minh chứng thực thi kiểm thử thủ công}
+
+\subsection{Báo cáo lỗi (Bug Report)}
+Với test case thất bại do lỗi của hệ thống, tạo bug report có mã \texttt{BUG-xx}. Nếu nhiều bộ dữ liệu thể hiện cùng một lỗi thì ghi nhận trong một bug report, không tạo bug trùng lặp.
+
+\begin{mdframed}[linewidth=0.6pt]
+\textbf{Mã lỗi:} \fillin{BUG-01}\\
+\textbf{Tiêu đề:} \fillin{Mô tả ngắn gọn lỗi}\\
+\textbf{Mức độ nghiêm trọng:} \fillin{Severity}\\
+\textbf{Môi trường:} \fillin{Hệ điều hành, trình duyệt, phiên bản}\\
+\textbf{Tiền điều kiện:} \fillin{Trạng thái cần có trước khi tái hiện lỗi}\\
+\textbf{Các bước tái hiện:}
+\begin{enumerate}[leftmargin=1cm]
+  \item \fillin{Bước 1}
+  \item \fillin{Bước 2}
+  \item \fillin{Bước 3}
+\end{enumerate}
+\textbf{Kết quả mong đợi:} \fillin{Kết quả đúng theo yêu cầu}\\
+\textbf{Kết quả thực tế:} \fillin{Kết quả quan sát được}\\
+\textbf{Minh chứng:} \fillin{Tên ảnh hoặc đường dẫn ảnh}
+\end{mdframed}
+
+\evidence{images/bug-01.png}{Minh chứng lỗi BUG-01 (nếu có)}
+
+% =========================================================
+\section{NV5 -- Tự động hóa kiểm thử bằng JUnit 5}
+
+\subsection{Phạm vi tự động hóa}
+Tự động hóa ít nhất 15 test case đã thiết kế ở NV3, bao gồm đầy đủ các test case \tcid{TC-CHK-01} đến \tcid{TC-CHK-05}. Báo cáo cần nêu rõ các test case nào đã được tự động hóa và lớp kiểm thử tương ứng.
+
+\subsection{Cấu trúc mã nguồn}
+Mô tả cấu trúc thực tế của project Maven. Cấu trúc tham khảo theo yêu cầu:
+\begin{lstlisting}
+src
+|-- main
+|   `-- java
+|       `-- pages
+|           |-- InventoryPage.java
+|           |-- CartPage.java
+|           `-- CheckoutPage.java
+`-- test
+    |-- java
+    |   `-- tests
+    |       |-- LoginTest.java
+    |       |-- CartTest.java
+    |       |-- CheckoutTest.java
+    |       |-- SortTest.java
+    |       `-- PerformanceTest.java
+    `-- resources
+        `-- login-data.csv
+\end{lstlisting}
+
+\subsection{Page Object Model (POM)}
+Các thao tác tương tác trực tiếp với giao diện web đặt trong lớp thuộc thư mục \texttt{pages/}. Các lớp test gọi phương thức từ Page Object và thực hiện kiểm tra kết quả (assertion).
+\begin{table}[htbp]
+\centering
+\caption{Phân chia Page Object và lớp kiểm thử}
+\begin{tabularx}{\textwidth}{|p{3.3cm}|p{4cm}|X|}
+\hline
+\textbf{Lớp} & \textbf{Phạm vi} & \textbf{Nội dung chính} \\
+\hline
+\texttt{InventoryPage} & FR-02, FR-04 & Thêm/xóa sản phẩm, badge giỏ hàng, sắp xếp và lấy tên/giá sản phẩm. \\
+\hline
+\texttt{CartPage} & FR-02, FR-03 & Kiểm tra sản phẩm trong giỏ, mở quy trình checkout. \\
+\hline
+\texttt{CheckoutPage} & FR-03 & Nhập thông tin, Continue, Cancel, kiểm tra lỗi, tổng tiền và Finish. \\
+\hline
+\texttt{LoginTest} & FR-01 & Kiểm thử đăng nhập, mở rộng dữ liệu CSV. \\
+\hline
+\texttt{CartTest} & FR-02 & Kiểm thử giỏ hàng và các giá trị biên về số lượng. \\
+\hline
+\texttt{CheckoutTest} & FR-03 & Kiểm thử các luồng checkout. \\
+\hline
+\texttt{SortTest} & FR-04 & Kiểm tra đủ bốn kiểu sắp xếp. \\
+\hline
+\texttt{PerformanceTest} & NFR-01 & Đo thời gian tải trang sản phẩm qua 5 lần đo và tính trung vị. \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Kiểm thử tham số và nguồn dữ liệu}
+Liệt kê tối thiểu ba phương thức dùng \texttt{@ParameterizedTest}. Bộ kiểm thử phải sử dụng ít nhất hai loại nguồn dữ liệu trong các loại sau: \texttt{@CsvFileSource}, \texttt{@CsvSource}, \texttt{@MethodSource}, \texttt{@ValueSource}.
+\begin{table}[htbp]
+\centering
+\caption{Các kiểm thử tham số đã triển khai}
+\begin{tabularx}{\textwidth}{|p{2.2cm}|p{2.8cm}|p{3cm}|X|}
+\hline
+\textbf{Lớp/phương thức} & \textbf{Annotation} & \textbf{Nguồn dữ liệu} & \textbf{Mã test case được bao phủ} \\
+\hline
+\fillin{LoginTest...} & \texttt{@ParameterizedTest} & \texttt{@CsvFileSource} & \fillin{Danh sách TC} \\
+\hline
+\fillin{...} & \texttt{@ParameterizedTest} & \fillin{@CsvSource/@MethodSource/@ValueSource} & \fillin{Danh sách TC} \\
+\hline
+\fillin{...} & \texttt{@ParameterizedTest} & \fillin{Nguồn dữ liệu} & \fillin{Danh sách TC} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Chờ tường minh và quy tắc triển khai}
+\begin{itemize}[leftmargin=1.25cm]
+  \item Sử dụng \texttt{WebDriverWait} để chờ điều kiện cần thiết.
+  \item Không sử dụng \texttt{Thread.sleep}.
+  \item \texttt{@DisplayName} của mỗi test cần chứa mã test case tương ứng.
+  \item Các thao tác tương tác với UI được đặt trong Page Object; lớp test tập trung gọi Page Object và assert kết quả.
+\end{itemize}
+
+\subsection{Kết quả chạy automation}
+Chạy bộ kiểm thử bằng lệnh tại thư mục dự án có file \texttt{pom.xml}:
+\begin{lstlisting}[language=bash]
+mvn clean test
+\end{lstlisting}
+\begin{table}[htbp]
+\centering
+\caption{Tổng hợp kết quả kiểm thử tự động}
+\begin{tabularx}{0.9\textwidth}{|X|c|}
+\hline
+\textbf{Chỉ số} & \textbf{Kết quả} \\
+\hline
+Tổng test case tự động hóa & \fillin{ } \\
+\hline
+Số test PASS & \fillin{ } \\
+\hline
+Số test FAIL & \fillin{ } \\
+\hline
+Số test bị bỏ qua/không chạy & \fillin{ } \\
+\hline
+Các mã test case \texttt{TC-CHK-01} đến \texttt{TC-CHK-05} đã chạy & \fillin{Có/Không; ghi chú} \\
+\hline
+\end{tabularx}
+\end{table}
+\evidence{images/nv5-maven-test.png}{Kết quả chạy kiểm thử tự động bằng Maven}
+
+\subsection{Nhận xét kết quả}
+\fillin{Nêu số lượng test case đã tự động hóa, yêu cầu đã được bao phủ, các test thất bại nếu có và nguyên nhân đã xác định. Không ghi kết quả chưa thực sự chạy.}
+
+% =========================================================
+\section{Kết luận}
+\fillin{Tóm tắt kết quả hoàn thành NV1--NV5, mức độ bao phủ yêu cầu, các lỗi quan trọng và hạn chế còn lại.}
+
+\section{Tài liệu tham khảo}
+\begin{enumerate}[leftmargin=1.25cm]
+  \item Tài liệu Assignment 1 -- Kiểm thử hộp đen, học phần Kiểm thử phần mềm do giảng viên cung cấp.
+  \item JUnit 5 User Guide: \url{https://junit.org/junit5/docs/current/user-guide/}
+  \item Selenium Documentation: \url{https://www.selenium.dev/documentation/}
+  \item Apache Maven Documentation: \url{https://maven.apache.org/guides/}
+  \item Website kiểm thử SauceDemo: \url{https://www.saucedemo.com/}
+\end{enumerate}
+
+\appendix
+\section{Phụ lục -- Danh sách minh chứng}
+\begin{itemize}[leftmargin=1.25cm]
+  \item Ảnh kết quả chạy test ban đầu và sau khi bổ sung dữ liệu NV1.
+  \item Ảnh hoặc bảng kết quả thực thi kiểm thử thủ công NV4.
+  \item Ảnh minh chứng các bug report, nếu có.
+  \item Ảnh kết quả chạy automation NV5.
+  \item Các minh chứng bổ sung theo yêu cầu của giảng viên.
+\end{itemize}
+
+\end{document}
