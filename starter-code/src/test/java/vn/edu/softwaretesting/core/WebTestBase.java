@@ -9,6 +9,8 @@ import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
@@ -29,6 +31,7 @@ public abstract class WebTestBase {
             case "chrome" -> new ChromeDriver(chromeOptions(headless));
             case "brave" -> new ChromeDriver(braveOptions(headless));
             case "firefox" -> new FirefoxDriver(firefoxOptions(headless));
+            case "edge" -> new EdgeDriver(edgeOptions(headless));
             default -> throw new IllegalArgumentException(
                     "Unsupported browser: " + browser);
         };
@@ -71,6 +74,14 @@ void closeBrowser(TestInfo testInfo) {
         FirefoxOptions options = new FirefoxOptions();
         if (headless) {
             options.addArguments("-headless");
+        }
+        return options;
+    }
+
+    private EdgeOptions edgeOptions(boolean headless) {
+        EdgeOptions options = new EdgeOptions();
+        if (headless) {
+            options.addArguments("--headless=new");
         }
         return options;
     }

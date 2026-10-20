@@ -7,7 +7,7 @@ thay Page Object, dữ liệu và test theo đúng hệ thống đã đăng ký.
 
 - JDK 17 trở lên
 - Maven 3.9 trở lên
-- Chrome hoặc Firefox
+- Chrome, Edge hoặc Firefox
 
 Selenium Manager sẽ tự tìm hoặc tải driver tương thích trong lần chạy đầu.
 
@@ -38,6 +38,16 @@ Chạy có giao diện trên Brave khi app được install ở vị trí khác 
 
 ```bash
 mvn test -Dheadless=false -Dbrowser=brave -Dbravepath="your\path\here\brave.exe"
+```
+Chạy headless trên Edge (mặc định ẩn cửa sổ, phù hợp CI):
+
+```bash
+mvn clean test -Dbrowser=edge
+```
+Chạy có giao diện trên Edge (xem trình duyệt chạy thật):
+
+```bash
+mvn test -Dheadless=false -Dbrowser=edge
 ```
 Chạy Firefox với một hệ thống khác:
 
