@@ -1,7 +1,6 @@
 package vn.edu.softwaretesting.pages;
 
 import java.time.Duration;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -34,6 +33,9 @@ public final class CheckoutPage {
         wait = new WebDriverWait(driver, Duration.ofSeconds(8));
     }
 
+    public String getCurrentUrl()  {
+    return driver.getCurrentUrl();
+    }
     /*
     Chờ trang nhập thông tin (checkout-step-one.html) tải xong.
     Chờ URL chứa "checkout-step-one.html" và ô First Name hiển thị.
@@ -200,7 +202,6 @@ public final class CheckoutPage {
                 + "//div[@class='inventory_item_name']");
         private final WebDriver driver;
         private final WebDriverWait wait;
-
         /*
         Khởi tạo CartPage với driver đang dùng.
         */
@@ -208,7 +209,9 @@ public final class CheckoutPage {
             this.driver = driver;
             wait = new WebDriverWait(driver, Duration.ofSeconds(8));
         }
-
+         public String getCurrentUrl() {
+        return driver.getCurrentUrl();
+        }
         /*
         Chờ trang giỏ hàng (cart.html) tải xong.
         Chờ URL chứa "cart.html" và nút Checkout hiển thị.

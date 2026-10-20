@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -12,7 +13,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 public abstract class WebTestBase {
-
+    private long testStartedAt;
     protected WebDriver driver;
     protected String baseUrl;
 
@@ -35,14 +36,27 @@ public abstract class WebTestBase {
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
         driver.manage().window().setSize(
                 new org.openqa.selenium.Dimension(1440, 900));
+        testStartedAt = System.nanoTime();
     }
 
     @AfterEach
-    void closeBrowser() {
+void closeBrowser(TestInfo testInfo) {
+    try {
         if (driver != null) {
             driver.quit();
         }
+    } finally {
+        double elapsedSeconds =
+                (System.nanoTime() - testStartedAt) / 1_000_000_000.0;
+
+        System.out.printf(
+                Locale.ROOT,
+                "[TIME] %s: %.3f seconds%n",
+                testInfo.getDisplayName(),
+                elapsedSeconds
+        );
     }
+}
 
     private ChromeOptions chromeOptions(boolean headless) {
         ChromeOptions options = new ChromeOptions();

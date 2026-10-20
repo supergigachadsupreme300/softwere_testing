@@ -22,6 +22,7 @@ public class CheckoutTest extends WebTestBase {
         assertTrue(result.accepted(), result.message());
         checkout = new InventoryPage(driver).addBackpack().openCart().clickCheckout();
         assertTrue(driver.getCurrentUrl().contains("checkout-step-one.html"));
+        checkout.getCurrentUrl();
     }
 
     @Test
@@ -37,6 +38,7 @@ public class CheckoutTest extends WebTestBase {
                 () -> assertTrue(driver.getCurrentUrl().contains("checkout-complete.html")),
                 () -> assertEquals("Thank you for your order!", checkout.getCompleteHeader()),
                 () -> assertTrue(checkout.isCartBadgeAbsent(), "Cart badge must disappear"));
+        checkout.getCurrentUrl();
     }
 
     @DisplayName("TC-CHK-02 / TC-CHK-03 / TC-CHK-04")
@@ -52,6 +54,7 @@ public class CheckoutTest extends WebTestBase {
         assertAll(
                 () -> assertEquals(expectedError, checkout.getErrorMessage(), caseId),
                 () -> assertTrue(driver.getCurrentUrl().contains("checkout-step-one.html"), caseId));
+        checkout.getCurrentUrl();
     }
 
     @Test
@@ -62,5 +65,6 @@ public class CheckoutTest extends WebTestBase {
                 () -> assertTrue(driver.getCurrentUrl().contains("cart.html")),
                 () -> assertEquals("Sauce Labs Backpack", cart.getBackpackName()),
                 () -> assertEquals("1", cart.getBadgeText()));
+        cart.getCurrentUrl();
     }
 }
