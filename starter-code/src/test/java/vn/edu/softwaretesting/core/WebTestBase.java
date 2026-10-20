@@ -2,6 +2,7 @@ package vn.edu.softwaretesting.core;
 
 import java.time.Duration;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,6 +64,10 @@ void closeBrowser(TestInfo testInfo) {
 
     private ChromeOptions chromeOptions(boolean headless) {
         ChromeOptions options = new ChromeOptions();
+        options.setExperimentalOption("prefs", Map.of(
+                "credentials_enable_service", false,
+                "profile.password_manager_enabled", false,
+                "profile.password_manager_leak_detection", false));
         if (headless) {
             options.addArguments("--headless=new");
         }
@@ -88,7 +93,7 @@ void closeBrowser(TestInfo testInfo) {
     private ChromeOptions braveOptions(boolean headless) {
         ChromeOptions options = new ChromeOptions();
         String bravePath = System.getProperty("bravePath");
-        if (bravePath != null && !bravePath.isBlank()) { //calling isBlank on a null will cause exception
+        if (bravePath != null && !bravePath.isBlank()) {
             options.setBinary(bravePath);
         }
         else{

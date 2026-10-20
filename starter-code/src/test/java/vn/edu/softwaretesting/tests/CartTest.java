@@ -1,5 +1,7 @@
 package vn.edu.softwaretesting.tests;
 
+import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,121 +9,130 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+
+import vn.edu.softwaretesting.core.WebTestBase;
+import vn.edu.softwaretesting.pages.CartPage;
+import vn.edu.softwaretesting.pages.InventoryPage;
+import vn.edu.softwaretesting.pages.LoginPage;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import vn.edu.softwaretesting.core.WebTestBase;
-import vn.edu.softwaretesting.pages.LoginPage;
-import vn.edu.softwaretesting.pages.InventoryPage;
+@Tag("web")
 public class CartTest extends WebTestBase {
+    private static final String BACKPACK = "Sauce Labs Backpack";
+    private static final List<String> PRODUCTS = List.of(
+            BACKPACK,
+            "Sauce Labs Bike Light",
+            "Sauce Labs Bolt T-Shirt",
+            "Sauce Labs Fleece Jacket",
+            "Sauce Labs Onesie",
+            "Test.allTheThings() T-Shirt (Red)");
 
     private InventoryPage inventoryPage;
 
     @BeforeEach
     void setUpCartTest() {
-        LoginPage loginPage =
-                new LoginPage(driver, baseUrl).open();
-
-        LoginPage.LoginResult result =
-                loginPage.login("standard_user", "secret_sauce");
-
-        assertTrue(result.accepted(), "Login have failed!");    //check if login's accepted return a true boolean, if not then marked as failed.
-
-        inventoryPage =
-                new InventoryPage(driver).waitUntilLoaded();
+        LoginPage.LoginResult result = new LoginPage(driver, baseUrl)
+                .open().login("standard_user", "secret_sauce");
+        assertTrue(result.accepted(), result.message());
+        inventoryPage = new InventoryPage(driver).waitUntilLoaded();
     }
-    @Test 
-    @DisplayName("TC-CART-B1: Badge empty upon login")
-    void  badgeEmptyUponLogin(){
-        assertEquals(0, inventoryPage.getCartBadgeCount());
+
+    private CartPage openCart() {
+        return new CartPage(driver).open();
     }
-    @ParameterizedTest(name = "{0}: Add {1}")
-        @CsvFileSource(resources = "/cartTest-data.csv", numLinesToSkip = 1)
-        void addOneProduct(
-                String testCaseID,
-                String productName,
-                int expectedCount) {
 
-        inventoryPage.addProductToCart(productName);
+    private void assertCartContents(CartPage cart, List<String> expectedProducts) {
+        assertAll(
+                () -> assertEquals(expectedProducts.size(), cart.getItemCount(), "Cart rows"),
+                () -> assertEquals(expectedProducts.size(), cart.getCartBadgeCount(), "Cart badge"),
+                () -> assertEquals(Set.copyOf(expectedProducts), Set.copyOf(cart.getProductNames()),
+                        "Products in the cart"));
+    }
 
-        assertEquals(expectedCount, inventoryPage.getCartBadgeCount());
-        }
     @Test
-        @DisplayName("TC-CART-B3: Add six products, remove one")
-        void addSixProductsThenRemoveOne() {
-        String[] products = {
-                "Sauce Labs Backpack",
-                "Sauce Labs Bike Light",
-                "Sauce Labs Bolt T-Shirt",
-                "Sauce Labs Fleece Jacket",
-                "Sauce Labs Onesie",
-                "Test.allTheThings() T-Shirt (Red)"
-        };
+    @DisplayName("TC-CART-B1: Badge empty upon login")
+    void badgeEmptyUponLogin() {
+        assertEquals(0, inventoryPage.getCartBadgeCount());
+        CartPage cart = openCart();
+        assertCartContents(cart, List.of());
+        assertTrue(cart.isCartBadgeAbsent(), "Empty cart must not display a badge");
+    }
 
-        for (String product : products) {
-                inventoryPage.addProductToCart(product);
-        }
+    @ParameterizedTest(name = "{0}: Add {1}")
+    @CsvFileSource(resources = "/cartTest-data.csv", numLinesToSkip = 1)
+    void addOneProduct(String testCaseId, String productName, int expectedCount) {
+        inventoryPage.addProductToCart(productName);
+        assertEquals(expectedCount, inventoryPage.getCartBadgeCount(), testCaseId);
+        assertCartContents(openCart(), List.of(productName));
+    }
 
+    @Test
+    @DisplayName("TC-CART-B3: Add six products, remove one")
+    void addSixProductsThenRemoveOne() {
+        PRODUCTS.forEach(inventoryPage::addProductToCart);
         assertEquals(6, inventoryPage.getCartBadgeCount());
 
-        inventoryPage.removeProductFromCart("Sauce Labs Backpack");
+        inventoryPage.removeProductFromCart(BACKPACK);
 
         assertEquals(5, inventoryPage.getCartBadgeCount());
-        }
-        
-        @Test
-        @DisplayName("TC-CART-B4: Add six products")
-        void addSixProducts() {
-        String[] products = {
-                "Sauce Labs Backpack",
-                "Sauce Labs Bike Light",
-                "Sauce Labs Bolt T-Shirt",
-                "Sauce Labs Fleece Jacket",
-                "Sauce Labs Onesie",
-                "Test.allTheThings() T-Shirt (Red)"
-        };
+        assertCartContents(openCart(), PRODUCTS.stream()
+                .filter(product -> !product.equals(BACKPACK)).toList());
+    }
 
-        for (String product : products) {
-                inventoryPage.addProductToCart(product);
-        }
-
+    @Test
+    @DisplayName("TC-CART-B4: Add six products")
+    void addSixProducts() {
+        PRODUCTS.forEach(inventoryPage::addProductToCart);
         assertEquals(6, inventoryPage.getCartBadgeCount());
-                }
-        @Test
-        @DisplayName("TC-CART-B5: Add one product then remove it")
-        void addOneProductThenRemoveOne(){
-                inventoryPage.addProductToCart("Sauce Labs Backpack");
-                inventoryPage.removeProductFromCart("Sauce Labs Backpack");
-                assertEquals(0, inventoryPage.getCartBadgeCount());
-        }
-        @Test
-        @DisplayName("TC-CART-EP1: Button State change when adding a product")
-        void buttonStateWhenAdd() {
-        String product = "Sauce Labs Backpack";
+        assertCartContents(openCart(), PRODUCTS);
+    }
+
+    @Test
+    @DisplayName("TC-CART-B5: Add one product then remove it")
+    void addOneProductThenRemoveOne() {
+        inventoryPage.addProductToCart(BACKPACK);
+        CartPage cart = openCart();
+        assertCartContents(cart, List.of(BACKPACK));
+
+        cart.removeProduct(BACKPACK);
+
+        assertCartContents(cart, List.of());
+        assertTrue(cart.isCartBadgeAbsent(), "Removing the last item must remove the badge");
+        inventoryPage = cart.continueShopping();
+        assertAll(
+                () -> assertEquals(0, inventoryPage.getCartBadgeCount()),
+                () -> assertEquals("Add to cart", inventoryPage.getProductButtonText(BACKPACK)));
+    }
+
+    @Test
+    @DisplayName("TC-CART-EP1: Button State change when adding a product")
+    void buttonStateWhenAdd() {
         int count = inventoryPage.getCartBadgeCount();
+        assertEquals("Add to cart", inventoryPage.getProductButtonText(BACKPACK));
 
-        assertEquals("Add to cart",inventoryPage.getProductButtonText(product));
-        assertEquals(count, inventoryPage.getCartBadgeCount());
+        inventoryPage.addProductToCart(BACKPACK);
 
-        inventoryPage.addProductToCart(product);
+        assertAll(
+                () -> assertEquals("Remove", inventoryPage.getProductButtonText(BACKPACK)),
+                () -> assertEquals(count + 1, inventoryPage.getCartBadgeCount()));
+        assertCartContents(openCart(), List.of(BACKPACK));
+    }
 
-        assertEquals("Remove",inventoryPage.getProductButtonText(product));
-        assertEquals(count+1, inventoryPage.getCartBadgeCount());
-        }
-        @Test
-        @DisplayName("TC-CART-EP2: Button State change when removing a product")
-        void buttonStateWhenRemove() {
-        String product = "Sauce Labs Backpack";
-        
-        inventoryPage.addProductToCart(product);
-        int count = inventoryPage.getCartBadgeCount();  //observe the change from here
+    @Test
+    @DisplayName("TC-CART-EP2: Button State change when removing a product")
+    void buttonStateWhenRemove() {
+        inventoryPage.addProductToCart(BACKPACK);
+        int count = inventoryPage.getCartBadgeCount();
+        assertEquals("Remove", inventoryPage.getProductButtonText(BACKPACK));
 
-        assertEquals("Remove", inventoryPage.getProductButtonText(product));
-        assertEquals(count, inventoryPage.getCartBadgeCount());
+        inventoryPage.removeProductFromCart(BACKPACK);
 
-        inventoryPage.removeProductFromCart(product);
-
-        assertEquals("Add to cart", inventoryPage.getProductButtonText(product));
-        assertEquals(count-1, inventoryPage.getCartBadgeCount());
-        }
+        assertAll(
+                () -> assertEquals("Add to cart", inventoryPage.getProductButtonText(BACKPACK)),
+                () -> assertEquals(count - 1, inventoryPage.getCartBadgeCount()));
+        assertCartContents(openCart(), List.of());
+    }
 }
