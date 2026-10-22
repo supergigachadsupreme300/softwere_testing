@@ -24,9 +24,10 @@ class LoginTest extends WebTestBase {
         loginPage = new LoginPage(driver, baseUrl).open();
     }
 
-    @ParameterizedTest(name = "TC-LOGIN-{index}: user={0}, accepted={2}")
+    @ParameterizedTest(name = "{0}: user={1}, accepted={3}")
     @CsvFileSource(resources = "/login-data.csv", numLinesToSkip = 1)
     void loginShouldMatchExpectedOutcome(
+            String testCaseId,
             String username,
             String password,
             boolean expectedAccepted,
@@ -35,11 +36,11 @@ class LoginTest extends WebTestBase {
         LoginResult actual = loginPage.login(username, password);
 
         assertEquals(expectedAccepted, actual.accepted(),
-                () -> "Unexpected result for user: " + username);
+                () -> testCaseId + ": unexpected result for user: " + username);
         assertTrue(
                 actual.currentUrl().contains(expectedEvidence)
                         || actual.message().contains(expectedEvidence),
-                () -> "Expected evidence '" + expectedEvidence
+                () -> testCaseId + ": expected evidence '" + expectedEvidence
                         + "', but URL/message was: "
                         + actual.currentUrl() + " / " + actual.message());
     }

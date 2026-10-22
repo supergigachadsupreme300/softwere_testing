@@ -16,13 +16,29 @@ Selenium Manager sẽ tự tìm hoặc tải driver tương thích trong lần c
 ```bash
 mvn clean test
 ```
+Để test một file nhất định
+```bash
+-Dtest=classname#methodname
+
+```
+ví dụ: -Dtest=CartTest#addBackpackToCart
+nếu config để trống surefire sẽ tìm mọi file nó discover được và thử toàn bộ!
 
 Chạy có giao diện trên Chrome:
 
 ```bash
 mvn test -Dheadless=false -Dbrowser=chrome
 ```
+Chạy có giao diện trên Brave:
 
+```bash
+mvn test -Dheadless=false -Dbrowser=brave
+```
+Chạy có giao diện trên Brave khi app được install ở vị trí khác C:\Program Files\BraveSoftware\Brave-Browser\Application:
+
+```bash
+mvn test -Dheadless=false -Dbrowser=brave -Dbravepath="your\path\here\brave.exe"
+```
 Chạy Firefox với một hệ thống khác:
 
 ```bash
@@ -31,6 +47,7 @@ mvn test \
   -DbaseUrl=http://localhost:8080 \
   -Dheadless=true
 ```
+
 
 Kết quả XML và log được tạo trong `target/surefire-reports/`.
 

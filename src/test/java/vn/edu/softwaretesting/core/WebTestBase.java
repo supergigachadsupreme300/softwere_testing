@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
@@ -26,7 +28,9 @@ public abstract class WebTestBase {
 
         driver = switch (browser) {
             case "chrome" -> new ChromeDriver(chromeOptions(headless));
+            case "brave" -> new ChromeDriver(braveOptions(headless));
             case "firefox" -> new FirefoxDriver(firefoxOptions(headless));
+            case "edge" -> new EdgeDriver(edgeOptions(headless));
             default -> throw new IllegalArgumentException(
                     "Unsupported browser: " + browser);
         };
@@ -56,6 +60,28 @@ public abstract class WebTestBase {
         FirefoxOptions options = new FirefoxOptions();
         if (headless) {
             options.addArguments("-headless");
+        }
+        return options;
+    }
+
+    private EdgeOptions edgeOptions(boolean headless) {
+        EdgeOptions options = new EdgeOptions();
+        if (headless) {
+            options.addArguments("--headless=new");
+        }
+        return options;
+    }
+    private ChromeOptions braveOptions(boolean headless) {
+        ChromeOptions options = new ChromeOptions();
+        String bravePath = System.getProperty("bravePath");
+        if (bravePath != null && !bravePath.isBlank()) { //calling isBlank on a null will cause exception
+            options.setBinary(bravePath);
+        }
+        else{
+            options.setBinary("C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe");
+        }
+        if (headless) {
+            options.addArguments("--headless=new");
         }
         return options;
     }
