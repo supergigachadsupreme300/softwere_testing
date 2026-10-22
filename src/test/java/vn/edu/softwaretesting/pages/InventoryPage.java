@@ -39,20 +39,24 @@ public class InventoryPage {
     }
 
     public void addProductToCart(String productName) {
-        int expectedCount = getCartBadgeCount() + 1;
+    int expectedCount = getCartBadgeCount() + 1;
 
-        WebElement button = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        getProductButton(productName)));
+    WebElement button = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    getProductButton(productName)));
 
-        if (!button.getText().equals("Add to cart")) {
-            throw new IllegalStateException(
-                    productName + " is already in the cart");
-        }
-
-        button.click();
-        waitForCartBadgeCount(expectedCount);   //wait for change before proceed
+    if (!button.getText().equals("Add to cart")) {
+        throw new IllegalStateException(
+                productName + " is already in the cart");
     }
+
+    button.click();
+
+    waitForCartBadgeCount(expectedCount);
+
+    wait.until(ExpectedConditions.textToBe(
+            getProductButton(productName), "Remove"));
+}
 
     public void removeProductFromCart(String productName) {
     int expectedCount = getCartBadgeCount() - 1;
@@ -67,6 +71,8 @@ public class InventoryPage {
 
     button.click();
     waitForCartBadgeCount(expectedCount);   //wait for change before proceed
+    wait.until(ExpectedConditions.textToBe(
+        getProductButton(productName), "Add to cart"));
 }
 
     public void waitForCartBadgeCount(int expectedCount) {
