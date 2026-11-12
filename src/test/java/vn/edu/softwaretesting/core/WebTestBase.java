@@ -1,7 +1,9 @@
 package vn.edu.softwaretesting.core;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,13 +50,25 @@ public abstract class WebTestBase {
     }
 
     private ChromeOptions chromeOptions(boolean headless) {
-        ChromeOptions options = new ChromeOptions();
-        if (headless) {
-            options.addArguments("--headless=new");
-        }
-        options.addArguments("--disable-search-engine-choice-screen");
-        return options;
+    ChromeOptions options = new ChromeOptions();
+
+    if (headless) {
+        options.addArguments("--headless=new");
     }
+    options.addArguments("--incognito");
+    options.addArguments("--window-size=1440,900");
+    options.addArguments("--disable-search-engine-choice-screen");
+    options.addArguments("--disable-features=PasswordLeakDetection,PasswordCheck");
+    options.addArguments("--disable-save-password-bubble");
+
+    Map<String, Object> prefs = new HashMap<>();
+    prefs.put("credentials_enable_service", false);
+    prefs.put("profile.password_manager_enabled", false);
+    prefs.put("profile.password_manager_leak_detection", false);
+    options.setExperimentalOption("prefs", prefs);
+
+    return options;
+}
 
     private FirefoxOptions firefoxOptions(boolean headless) {
         FirefoxOptions options = new FirefoxOptions();
