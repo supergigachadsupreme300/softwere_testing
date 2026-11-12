@@ -23,9 +23,8 @@ import vn.edu.softwaretesting.pages.LoginPage;
 @DisplayName("FR-04: Sorting")
 class SortTest extends WebTestBase {
 
-    // Đổi cho khớp mã lỗi nhóm đã đánh trong báo cáo / Excel.
-    private static final String BUG_PROBLEM_USER = "BUG-xx";
-    private static final String BUG_VISUAL_USER = "BUG-yy";
+    private static final String BUG_PROBLEM_USER = "BUG-02";
+    private static final String BUG_VISUAL_USER = "BUG-03";
 
     private InventoryPage login(String username) {
         new LoginPage(driver, baseUrl).open().login(username, "secret_sauce");
