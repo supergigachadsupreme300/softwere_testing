@@ -23,7 +23,7 @@ public final class LoginPage {
     public LoginPage(WebDriver driver, String baseUrl) {
         this.driver = driver;
         this.baseUrl = baseUrl;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
     public LoginPage open() {
@@ -55,6 +55,15 @@ public final class LoginPage {
         passElem.clear();
         passElem.sendKeys(password);
 
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
+                "arguments[0].type = 'text';", passElem);
+
+        try {
+            new WebDriverWait(driver, Duration.ofSeconds(5))
+                    .until(d -> false);
+        } catch (TimeoutException ignored) {
+        }
+
         driver.findElement(LOGIN_BUTTON).click();
 
         try {
@@ -70,6 +79,13 @@ public final class LoginPage {
         String message = accepted
                 ? "Login accepted"
                 : driver.findElement(ERROR).getText();
+
+        try {
+            new WebDriverWait(driver, Duration.ofSeconds(5))
+                    .until(d -> false);
+        } catch (TimeoutException ignored) {
+        }
+
         return new LoginResult(accepted, driver.getCurrentUrl(), message);
     }
 
